@@ -75,13 +75,46 @@ function eliminarDelCarrito(e) {
   productosEnCarrito.splice(index,1);
   cargarProductosCarrito();
   localStorage.setItem("productos-en-carrito",  JSON.stringify(productosEnCarrito));
+  Toastify({
+    text: "Producto Elminado",
+    duration: 2000,
+    close: true,
+    gravity: "top", // `top` or `bottom`
+    position: "right", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    offset: {
+        x: "2rem", // horizontal axis - can be a number or a string indicating unity. eg: '2em'
+        y: "1.5rem" // vertical axis - can be a number or a string indicating unity. eg: '2em'
+    },
+    style: {
+      background: "linear-gradient(to right, #4b33a8, #785ce9)",
+      borderRadius: '2rem',
+      textTransform:'upeercase',
+      fontZise: ".75rem"
+    },
+    onClick: function(){} // Callback after click
+  }).showToast();
 }
 
-botonVaciar.addEventListener('click', vaciarCarrito);
+botonVaciar.addEventListener('click',vaciarCarrito);
 function vaciarCarrito() {
-    productosEnCarrito.length = 0;
-    cargarProductosCarrito();
-    localStorage.setItem("productos-en-carrito",  JSON.stringify(productosEnCarrito));
+    
+    Swal.fire({
+        title: "¿Estas Seguro?",
+        icon: "question",
+        html: `
+          Se borraran ${productosEnCarrito.reduce((acc,producto) =>acc + (producto.cantidad),0)} productos`,
+        showCancelButton: true,
+        focusConfirm: false,
+        confirmButtonText: `si`,
+        cancelButtonText: `no` ,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            productosEnCarrito.length = 0;
+            cargarProductosCarrito();
+            localStorage.setItem("productos-en-carrito",  JSON.stringify(productosEnCarrito));
+        };
+      });
 }
 
 function actualizarTotal() {
